@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitspace.food.mapper.UserMapper">
+
+    <update id="updateUser" parameterType="com.bitspace.food.entity.User">
+        update t_user
+        <set>
+            <if test="userName!=null">name= #{userName},</if>
+            <if test="loginPwd!=null">login_pwd= #{loginPwd},</if>
+            <if test="pricePassword!=null">pay_pwd= #{pricePassword},</if>
+            <if test="updateTime!=null">update_time= #{updateTime},</if>
+            <if test="LoginTime!=null">login_time= #{LoginTime},</if>
+        </set>
+        where id = #{uid}
+    </update>
+
+    <update id="updatePwd" parameterType="com.bitspace.food.entity.User">
+        update t_user
+        <set>
+            <if test="loginPwd!=null">login_pwd= #{loginPwd},</if>
+            <if test="updateTime!=null">update_time= #{updateTime},</if>
+        </set>
+        where id = #{uid}
+    </update>
+
+    <update id="updatePricePwd" parameterType="com.bitspace.food.entity.User">
+        update t_user
+        <set>
+            <if test="pricePassword!=null">pay_pwd= #{pricePassword},</if>
+            <if test="updateTime!=null">update_time= #{updateTime},</if>
+        </set>
+        where id = #{uid}
+    </update>
+
+
+</mapper>

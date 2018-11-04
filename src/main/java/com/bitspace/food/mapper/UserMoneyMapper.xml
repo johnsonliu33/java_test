@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ /**
+  ~  * All rights Reserved, Designed By www.bitzone.zone
+  ~  *
+  ~  * @package_name
+  ~  * @class_name
+  ~  * @auth
+  ~  * @create_time
+  ~  * @company 香港币特空间交易平台有限公司
+  ~  * @comments
+  ~  * @method_name
+  ~  * @return Copyright (c) 2018 www.bitzone.zone Inc. All rights reserved.
+  ~  * 香港币特空间交易平台有限公司版权所有
+  ~  * 注意：本内容仅限于香港币特空间交易平台有限公司内部传阅，禁止外泄以及用于其他的商业目的
+  ~  */
+  ~
+  -->
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitspace.food.mapper.UserMoneyMapper">
+        <select id="getMoneyDetailCount" resultType="java.lang.Integer"
+                parameterType="java.util.HashMap">
+            SELECT
+              COUNT(1) counts
+            FROM
+              t_user_money
+            WHERE 1 =1
+            <if test="uid != null ">and uid=#{uid}</if>
+            <if test="integralName != null ">and integral_name=#{integralName}</if>
+        </select>
+    <update id="update" parameterType="java.util.HashMap">
+        update t_user_money
+        <set>
+            <if test="balance != null">
+                balance = #{balance},
+            </if>
+            <if test="integralName != null">
+                integral_name = #{integralName},
+            </if>
+            <if test="integral != null">
+                integral = #{integral},
+            </if>
+            <if test="consumptionBalance != null">
+                consumption_balance = #{consumptionBalance},
+            </if>
+            <if test="quarterBalance != null">
+                quarter_balance = #{quarterBalance},
+            </if>
+            <if test="rechargeBalance != null">
+                recharge_balance = #{rechargeBalance},
+            </if>
+            <if test="rechargeIntegral != null">
+                rechargeintegral = #{rechargeIntegral},
+            </if>
+            <if test="intoIntegral != null">
+                intointegral = #{intoIntegral}
+            </if>
+        </set>
+        where  uid=#{uid}
+    </update>
+
+    <update id="updateIntegralNoClearing" parameterType="java.util.HashMap">
+        update t_integral_clearing
+        <set>
+            <if test="noclearing != null">
+                noclearing = noclearing + #{noclearing}
+            </if>
+        </set>
+        where  source=#{source}
+    </update>
+
+    <update id="updateIntegralYetClearing" parameterType="java.util.HashMap">
+        update t_integral_clearing
+            SET   yetclearing = yetclearing + noclearing,
+                  noclearing = 0
+        where  id=#{id}
+    </update>
+
+</mapper>

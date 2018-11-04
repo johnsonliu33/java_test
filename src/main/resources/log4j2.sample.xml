@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <!-- <property name="LOG_HOME">/home/ubuntu/code/food/logs</property>-->
+        <property name="LOG_HOME">/home/work/gitCode/food/logs</property>
+    </Properties>
+    <Appenders>
+
+        <RollingFile name="debugAppender" fileName="${LOG_HOME}/debug.log" filePattern="${LOG_HOME}/debug-%d{yyyyMMdd}.log.gz">
+            <!--<ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>-->
+            <PatternLayout>
+                <Pattern>%d{MMdd HH:mm:ss.SSS} %-5p [%c][%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <Filters>
+                <!-- 只记录info和warn级别信息 -->
+                <!--<ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>-->
+                <!--<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />-->
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </RollingFile>
+
+        <RollingFile name="errAppender" fileName="${LOG_HOME}/error.log" filePattern="${LOG_HOME}/error-%d{yyyyMMdd}.log.gz">
+            <!--<ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>-->
+            <PatternLayout>
+                <Pattern>%d{MMdd HH:mm:ss.SSS} %-5p [%c][%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+
+            <Filters>
+                <!-- 只记录error级别信息 -->
+                <!--<ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY" />-->
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </RollingFile>
+
+        <RollingFile name="dbAppender" fileName="${LOG_HOME}/db.log" filePattern="${LOG_HOME}/db-%d{yyyyMMdd}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{MMdd HH:mm:ss.SSS} %-5p [%c][%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+
+        </RollingFile>
+
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{MMdd HH:mm:ss.SSS} %-5p [%c][%t] %m%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+
+        <AsyncRoot  additivity="false" level="error" includeLocation="true">
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="errAppender" />
+        </AsyncRoot>
+
+        <AsyncLogger name="com.bitspace.flame" additivity="false" level="debug" includeLocation="true">
+            <appenderRef ref="STDOUT" level="debug"/>
+            <appenderRef ref="debugAppender" level="debug"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="com.bitspace.flame" additivity="false" level="debug" includeLocation="true">
+
+            <!--<appenderRef ref="STDOUT" level="debug"/>-->
+            <appenderRef ref="dbAppender" level="debug"/>
+        </AsyncLogger>
+
+    </Loggers>
+
+</Configuration>

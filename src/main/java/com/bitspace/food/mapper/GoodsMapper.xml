@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitspace.food.mapper.GoodsMapper">
+    <select id="goodsListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(t.id)
+        FROM t_goods t
+        INNER JOIN t_admin a ON t.aid = a.aid
+        LEFT JOIN t_admin sa ON t.sell_aid = sa.aid
+        WHERE 1 = 1
+        <if test="search != null and search != '' "> AND (t.id LIKE '%' #{search} '%' OR t.name LIKE '%' #{search} '%') </if>
+        <if test="status != null "> AND t.status = #{status} </if>
+        <if test="aid != null "> AND t.aid = #{aid} </if>
+        <if test="sellAid != null "> AND t.sell_aid = #{sellAid} </if>
+        <if test="aid == null and sellAid == null "> AND t.status != 1 </if>
+        <if test="goodsId != null "> AND t.id = #{goodsId} </if>
+        <if test="aName != null and aName != '' ">and a.name LIKE '%' #{aName} '%'  </if>
+        <if test="sellName != null and sellName != '' ">and sa.name LIKE '%' #{sellName} '%'  </if>
+        <if test="startTime !=null and startTime != '' "> AND t.create_time  >= #{startTime} </if>
+        <if test="endTime !=null and endTime != '' "> AND t.create_time  &lt;=  #{endTime} </if>
+        <!--<if test="name != null and name != '' ">and t.name LIKE #{name} '%'  </if>-->
+    </select>
+
+    <select id="goodsList" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+        SELECT
+            t.id,
+            t.name name,
+            t.aid aid,
+            a.name aname,
+            ifnull(sa.aid,'') sellAid,
+            ifnull(sa.name,'') sellName,
+            t.number number,
+            t.circulate_num circulateNum,
+            t.recall_num recallNum,
+            t.status,
+            t.create_time createTime,
+            IFNULL(acc.num,0) accusationNum,
+            IFNULL(acc.disposeNum,0) disposeNum
+        FROM t_goods t
+        INNER JOIN t_admin a ON t.aid = a.aid
+        LEFT JOIN t_admin sa ON t.sell_aid = sa.aid
+        LEFT JOIN (SELECT ah.goodsid,SUM(IF(ah.status = 2,1,0)) disposeNum,COUNT(ah.id) num FROM t_accusation_history ah
+        GROUP BY ah.goodsid) acc ON acc.goodsid = t.id
+        WHERE 1 = 1
+        <if test="search != null and search != '' "> AND (t.id LIKE '%' #{search} '%' OR t.name LIKE '%' #{search} '%') </if>
+        <if test="status != null "> AND t.status = #{status} </if>
+        <if test="aid != null "> AND t.aid = #{aid} </if>
+        <if test="sellAid != null "> AND t.sell_aid = #{sellAid} </if>
+        <if test="aid == null and sellAid == null "> AND t.status != 1 </if>
+        <if test="goodsId != null "> AND t.id = #{goodsId} </if>
+        <if test="aName != null and aName != '' ">and a.name LIKE '%' #{aName} '%'  </if>
+        <if test="sellName != null and sellName != '' ">and sa.name LIKE '%' #{sellName} '%'  </if>
+        <if test="startTime !=null and startTime != '' "> AND t.create_time  >= #{startTime} </if>
+        <if test="endTime !=null and endTime != '' "> AND t.create_time  &lt;=  #{endTime} </if>
+        ORDER by t.create_time DESC
+        LIMIT #{currentPage},#{count}
+    </select>
+
+    <update id="updateGoods" parameterType="com.bitspace.food.entity.Goods">
+        update t_goods t
+        <set>
+            <if test="cause!=null">t.cause= #{cause},</if>
+            <if test="number!=null">t.number= #{number},</if>
+            <if test="circulateNum!=null">t.circulate_num= #{circulateNum},</if>
+            <if test="recallNum!=null">t.recall_num= #{recallNum},</if>
+            <if test="status!=null">t.status= #{status},</if>
+            <if test="sellAid!=null">t.sell_aid= #{sellAid},</if>
+            <if test="status!=null">t.status= #{status},</if>
+            <if test="licence!=null">t.licence= #{licence},</if>
+            <if test="brand!=null">t.brand= #{brand},</if>
+            <if test="specification!=null">t.specification= #{specification},</if>
+            <if test="burdenSheet!=null">t.burden_sheet= #{burdenSheet},</if>
+            <if test="store!=null">t.store= #{store},</if>
+            <if test="expirationDate!=null">t.expiration_date= #{expirationDate},</if>
+            <if test="worksName!=null">t.works_name= #{worksName},</if>
+            <if test="worksAddress!=null">t.works_address= #{worksAddress},</if>
+            <if test="worksPhone!=null">t.works_phone= #{worksPhone},</if>
+            <if test="hashId!=null">t.hash_id= #{hashId},</if>
+        </set>
+        where t.id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitspace.food.mapper.MerchantMapper">
+    <select id="getMerchantListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        COUNT(t.aid)
+        FROM t_admin t
+        WHERE 1 = 1
+        AND t.type != 1
+        <if test="merchantName != null and merchantName != '' ">and t.name LIKE #{merchantName} '%'  </if>
+        <if test="type != null and type != '' ">and t.type = #{type}</if>
+        <if test="status != null and status != '' ">and t.status = #{status}</if>
+    </select>
+    <select id="getMerchantList" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+        SELECT t.aid AS aid,
+        t.name AS realName,
+        t.type AS 'type',
+        t.recall_num AS recallNum,
+        t.status AS 'status',
+        t.report_num AS reportNum,
+        t.create_time AS createTime
+        FROM t_admin t
+        WHERE 1 = 1
+        AND t.type != 1
+        <if test="merchantName != null and merchantName != '' ">and t.name LIKE #{merchantName} '%'  </if>
+        <if test="type != null and type != '' ">and t.type = #{type}</if>
+        <if test="status != null and status != '' ">and t.status = #{status}</if>
+        ORDER BY t.create_time DESC
+        LIMIT #{currentPage},#{count}
+    </select>
+</mapper>

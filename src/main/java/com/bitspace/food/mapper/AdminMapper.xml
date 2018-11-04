@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitspace.food.mapper.AdminMapper">
+
+    <update id="batchUpdateRecallNum" parameterType="java.util.List">
+        UPDATE t_admin SET recall_num=recall_num + 1
+        WHERE aid in
+        <foreach collection="list" item="id"
+                 open="(" close=")" index="index" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateReportNum" parameterType="java.util.List">
+        UPDATE t_admin SET report_num=report_num + 1
+        WHERE aid in
+        <foreach collection="list" item="id"
+                 open="(" close=")" index="index" separator=",">
+            #{id}
+        </foreach>
+    </update>
+</mapper>
